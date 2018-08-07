@@ -1,0 +1,32 @@
+--- a/configure	2018-06-08 19:20:15.107760686 +0800
++++ b/configure	2018-06-08 19:21:21.319375412 +0800
+@@ -3452,16 +3452,19 @@
+ ##########################################
+ # pixman support probe
+ 
+-if test "$want_tools" = "no" -a "$softmmu" = "no"; then
+-  pixman_cflags=
+-  pixman_libs=
+-elif $pkg_config --atleast-version=0.21.8 pixman-1 > /dev/null 2>&1; then
+-  pixman_cflags=$($pkg_config --cflags pixman-1)
+-  pixman_libs=$($pkg_config --libs pixman-1)
+-else
+-  error_exit "pixman >= 0.21.8 not present." \
+-      "Please install the pixman devel package."
+-fi
++pixman_cflags=$QEMU_CFLAGS
++pixman_libs=$LDFLAGS
++
++#if test "$want_tools" = "no" -a "$softmmu" = "no"; then
++#  pixman_cflags=
++#  pixman_libs=
++#elif $pkg_config --atleast-version=0.21.8 pixman-1 > /dev/null 2>&1; then
++#  pixman_cflags=$($pkg_config --cflags pixman-1)
++#  pixman_libs=$($pkg_config --libs pixman-1)
++#else
++#  error_exit "pixman >= 0.21.8 not present." \
++	-#      "Please install the pixman devel package."
++#fi
+ 
+ ##########################################
+ # libmpathpersist probe
