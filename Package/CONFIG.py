@@ -33,6 +33,7 @@ def set_global(args):
     global src_pkgconfig_dir
     global dst_pkgconfig_dir
     global dst_bin_dir
+    global dst_etc_dir
     global install_test_utils
     pkg_path = args["pkg_path"]
     output_dir = args["output_path"]
@@ -46,6 +47,7 @@ def set_global(args):
     dst_include_dir = ops.path_join("include",args["pkg_name"])
     dst_lib_dir = ops.path_join(install_dir, "lib")
     dst_bin_dir = ops.path_join(install_dir, "bin")
+    dst_etc_dir = ops.path_join(install_dir, "etc")
     dst_usr_local_lib_dir = ops.path_join(install_dir, "usr/local/lib")
     dst_usr_local_libexec_dir = ops.path_join(install_dir, "usr/local/libexec")
     dst_usr_local_share_dir = ops.path_join(install_dir, "usr/local/share")
@@ -90,7 +92,7 @@ def MAIN_EXTRACT(args):
     set_global(args)
 
     ops.unTarXz(tarball_pkg, output_dir)
-    #ops.copyto(ops.path_join(pkg_path, "finit.conf"), output_dir)
+    ops.copyto(ops.path_join(pkg_path, "qemu-ifup"), output_dir)
 
     return True
 
@@ -162,6 +164,8 @@ def MAIN_BUILD(args):
     ops.mkdir(dst_usr_local_share_dir)
     ops.copyto(ops.path_join(install_tmp_dir, "usr/local/share/qemu"), dst_usr_local_share_dir)
 
+    ops.mkdir(dst_etc_dir)
+    ops.copyto(ops.path_join(output_dir, "qemu-ifup"), dst_etc_dir)
     #ops.mkdir(tmp_include_dir)
     #ops.copyto(ops.path_join(install_tmp_dir, "usr/local/include/."), tmp_include_dir)
 
@@ -178,6 +182,7 @@ def MAIN_INSTALL(args):
     iopc.installBin(args["pkg_name"], ops.path_join(dst_usr_local_lib_dir, "."), "usr/local/lib")
     iopc.installBin(args["pkg_name"], ops.path_join(dst_usr_local_libexec_dir, "."), "usr/local/libexec")
     iopc.installBin(args["pkg_name"], ops.path_join(dst_usr_local_share_dir, "."), "usr/local/share")
+    iopc.installBin(args["pkg_name"], ops.path_join(dst_etc_dir, "."), "etc")
     #iopc.installBin(args["pkg_name"], ops.path_join(tmp_include_dir, "."), dst_include_dir)
     #iopc.installBin(args["pkg_name"], ops.path_join(dst_pkgconfig_dir, '.'), "pkgconfig")
 
