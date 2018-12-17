@@ -66,25 +66,6 @@ def MAIN_ENV(args):
     ops.exportEnv(ops.setEnv("CXX", ops.getEnv("CROSS_COMPILE") + "g++"))
     ops.exportEnv(ops.setEnv("CROSS", ops.getEnv("CROSS_COMPILE")))
     ops.exportEnv(ops.setEnv("DESTDIR", install_tmp_dir))
-    #ops.exportEnv(ops.setEnv("PKG_CONFIG_LIBDIR", ops.path_join(iopc.getSdkPath(), "pkgconfig")))
-    #ops.exportEnv(ops.setEnv("PKG_CONFIG_SYSROOT_DIR", iopc.getSdkPath()))
-
-    cc_sysroot = ops.getEnv("CC_SYSROOT")
-    cflags = ""
-    cflags += " -I" + ops.path_join(cc_sysroot, 'usr/include')
-    cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/libdrm')
-    cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/libdrm/libdrm')
-
-    ldflags = ""
-    ldflags += " -L" + ops.path_join(cc_sysroot, 'lib')
-    ldflags += " -L" + ops.path_join(cc_sysroot, 'usr/lib')
-    ldflags += " -L" + ops.path_join(iopc.getSdkPath(), 'lib')
-
-    libs = ""
-    libs += " -lffi -lxml2 -lexpat -ldrm"
-    #ops.exportEnv(ops.setEnv("LDFLAGS", ldflags))
-    #ops.exportEnv(ops.setEnv("CFLAGS", cflags))
-    #ops.exportEnv(ops.setEnv("LIBS", libs))
 
     return False
 
@@ -112,23 +93,12 @@ def MAIN_CONFIGURE(args):
     extra_conf = []
     extra_conf.append("--target-list=x86_64-softmmu,x86_64-linux-user")
 
-    cc_sysroot = ops.getEnv("CC_SYSROOT")
-    cflags = ""
-    cflags += " -I" + ops.path_join(cc_sysroot, 'usr/include')
-    cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/libz')
-    cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/libpcre3')
-    cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/libpixman')
-    cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/libxml2')
-    cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/libglib')
-    cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/libglib/glib-2.0')
-
-    libs = ""
-    libs += " -L" + ops.path_join(cc_sysroot, 'lib')
-    libs += " -L" + ops.path_join(cc_sysroot, 'usr/lib')
-    libs += " -L" + ops.path_join(iopc.getSdkPath(), 'lib')
-    libs += " -lz -lglib-2.0 -lpcre -lffi -lpixman-1 -lxml2"
+    cflags = iopc.get_includes()
+    libs = iopc.get_libs()
+    
     extra_conf.append("--extra-cflags=" + cflags)
     extra_conf.append("--extra-ldflags=" + libs)
+    #extra_conf.append("--enable-sdl")
 
     iopc.configure(tarball_dir, extra_conf)
 
@@ -185,6 +155,11 @@ def MAIN_INSTALL(args):
     iopc.installBin(args["pkg_name"], ops.path_join(dst_etc_dir, "."), "etc")
     #iopc.installBin(args["pkg_name"], ops.path_join(tmp_include_dir, "."), dst_include_dir)
     #iopc.installBin(args["pkg_name"], ops.path_join(dst_pkgconfig_dir, '.'), "pkgconfig")
+
+    return False
+
+def MAIN_SDKENV(args):
+    set_global(args)
 
     return False
 
